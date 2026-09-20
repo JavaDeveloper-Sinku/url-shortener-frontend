@@ -21,7 +21,7 @@ export default function Home() {
       setShortUrl("");
       setCopied(false);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/shorten`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC}/api/shorten`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
