@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function Home() {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
@@ -15,30 +17,45 @@ export default function Home() {
       return;
     }
 
+    if (!API_URL) {
+      console.error("NEXT_PUBLIC_API_URL is not configured.");
+      setError("API configuration is missing. Please try again later.");
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
       setShortUrl("");
       setCopied(false);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/shorten`, {
+      console.log("API URL:", API_URL);
+
+      const response = await fetch(`${API_URL}/api/shorten`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          originalUrl: url,
+          originalUrl: url.trim(),
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to shorten URL");
+        throw new Error(`Request failed with status ${response.status}`);
       }
 
       const result = await response.text();
-      setShortUrl(result.replace("Short URL: ", ""));
+
+      const generatedUrl = result.replace("Short URL: ", "").trim();
+
+      if (!generatedUrl) {
+        throw new Error("Short URL was not returned by the server.");
+      }
+
+      setShortUrl(generatedUrl);
     } catch (err) {
-      console.error(err);
+      console.error("Shorten URL error:", err);
       setError("Unable to shorten the URL. Please try again.");
     } finally {
       setLoading(false);
@@ -46,31 +63,40 @@ export default function Home() {
   };
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(shortUrl);
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+    if (!shortUrl) return;
+
+    try {
+      await navigator.clipboard.writeText(shortUrl);
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+      setError("Unable to copy the link.");
+    }
   };
 
   return (
-    <main className="relative min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4 overflow-hidden">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 p-4 text-slate-100">
       {/* Dynamic Background Glows */}
-      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-indigo-600/30 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-violet-600/30 rounded-full blur-3xl pointer-events-none" />
+      <div className="pointer-events-none absolute -left-20 top-1/4 h-80 w-80 rounded-full bg-indigo-600/30 blur-3xl" />
+      <div className="pointer-events-none absolute -right-20 bottom-1/4 h-80 w-80 rounded-full bg-violet-600/30 blur-3xl" />
 
       <div className="relative z-10 w-full max-w-2xl py-12">
         {/* Header */}
-        <div className="mb-10 text-center space-y-4">
+        <div className="mb-10 space-y-4 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-indigo-400 backdrop-blur-md">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500" />
             </span>
+
             Modern Link Management
           </div>
 
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+          <h1 className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-6xl">
             Shorten your links.
           </h1>
 
@@ -80,7 +106,7 @@ export default function Home() {
         </div>
 
         {/* Main Glass Card */}
-        <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-slate-700/80">
+        <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-slate-700/80 sm:p-8">
           <div className="flex flex-col gap-3 sm:flex-row">
             <div className="relative flex-1">
               <input
@@ -92,11 +118,11 @@ export default function Home() {
                   setError("");
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === "Enter" && !loading) {
                     handleShorten();
                   }
                 }}
-                className="w-full h-14 rounded-2xl border border-slate-800 bg-slate-950/80 px-5 text-sm sm:text-base text-slate-100 placeholder-slate-500 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                className="h-14 w-full rounded-2xl border border-slate-800 bg-slate-950/80 px-5 text-sm text-slate-100 outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 sm:text-base"
               />
             </div>
 
@@ -107,10 +133,26 @@ export default function Home() {
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  <svg
+                    className="h-5 w-5 animate-spin text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
+
                   Processing...
                 </span>
               ) : (
@@ -121,8 +163,9 @@ export default function Home() {
 
           {/* Error Message */}
           {error && (
-            <p className="mt-4 text-sm font-medium text-rose-400 flex items-center gap-1.5">
-              <span>⚠️</span> {error}
+            <p className="mt-4 flex items-center gap-1.5 text-sm font-medium text-rose-400">
+              <span>⚠️</span>
+              {error}
             </p>
           )}
 
@@ -133,22 +176,22 @@ export default function Home() {
                 Generated Link
               </p>
 
-              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+              <div className="mt-3 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                 <a
                   href={shortUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="min-w-0 flex-1 break-all text-base sm:text-lg font-medium text-slate-100 hover:text-indigo-300 transition-colors"
+                  className="min-w-0 flex-1 break-all text-base font-medium text-slate-100 transition-colors hover:text-indigo-300 sm:text-lg"
                 >
                   {shortUrl}
                 </a>
 
                 <button
                   onClick={handleCopy}
-                  className={`h-11 px-6 rounded-xl font-medium text-sm transition-all duration-200 ${
+                  className={`h-11 rounded-xl border px-6 text-sm font-medium transition-all duration-200 ${
                     copied
-                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                      : "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+                      ? "border-emerald-500/30 bg-emerald-500/20 text-emerald-400"
+                      : "border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700"
                   }`}
                 >
                   {copied ? "✓ Copied" : "Copy Link"}
@@ -159,7 +202,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-center text-xs tracking-wider uppercase text-slate-500">
+        <p className="mt-8 text-center text-xs uppercase tracking-wider text-slate-500">
           Fast • Secure • Reliable
         </p>
       </div>
