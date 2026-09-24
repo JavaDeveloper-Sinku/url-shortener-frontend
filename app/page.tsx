@@ -96,15 +96,15 @@ export default function Home() {
     <main className="min-h-screen overflow-hidden bg-[#050806] text-white">
       {/* Background glow */}
       <div className="pointer-events-none fixed inset-0">
-        <div className="absolute left-[-180px] top-[10%] h-[420px] w-[420px] rounded-full bg-emerald-500/10 blur-[120px]" />
+        <div className="absolute -left-45 top-[10%] h-105 w-105 rounded-full bg-emerald-500/10 blur-[120px]" />
 
-        <div className="absolute right-[-180px] top-[35%] h-[420px] w-[420px] rounded-full bg-green-500/10 blur-[120px]" />
+        <div className="absolute -right-45 top-[35%] h-105 w-105 rounded-full bg-green-500/10 blur-[120px]" />
 
-        <div className="absolute bottom-[-200px] left-[35%] h-[400px] w-[400px] rounded-full bg-emerald-400/5 blur-[120px]" />
+        <div className="absolute -bottom-50 left-[35%] h-100 w-100 rounded-full bg-emerald-400/5 blur-[120px]" />
       </div>
 
       {/* Navbar */}
-      <nav className="relative z-20 border-b border-white/[0.06] bg-[#050806]/70 backdrop-blur-xl">
+      <nav className="relative z-20 border-b border-white/6 bg-[#050806]/70 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 sm:px-8">
           {/* Logo */}
           <div className="flex items-center gap-3">
@@ -150,7 +150,7 @@ export default function Home() {
               Your links,
               <br />
 
-              <span className="bg-gradient-to-r from-emerald-300 via-emerald-400 to-green-500 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-emerald-300 via-emerald-400 to-green-500 bg-clip-text text-transparent">
                 simplified.
               </span>
             </h1>
@@ -167,7 +167,7 @@ export default function Home() {
               {/* Green glow */}
               <div className="absolute -inset-1 rounded-[28px] bg-emerald-500/10 opacity-0 blur-xl transition-opacity duration-500 group-focus-within:opacity-100" />
 
-              <div className="relative rounded-[28px] border border-white/[0.08] bg-[#0b100d]/90 p-3 shadow-2xl shadow-black/40 backdrop-blur-xl">
+              <div className="relative rounded-[28px] border border-white/8 bg-[#0b100d]/90 p-3 shadow-2xl shadow-black/40 backdrop-blur-xl">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   {/* Input */}
                   <div className="relative flex-1">
@@ -221,7 +221,7 @@ export default function Home() {
 
             {/* Generated URL */}
             {shortUrl && (
-              <div className="mt-5 overflow-hidden rounded-2xl border border-emerald-400/15 bg-emerald-400/[0.04] p-5">
+              <div className="mt-5 overflow-hidden rounded-2xl border border-emerald-400/15 bg-emerald-400/4 p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0">
                     <div className="mb-2 flex items-center gap-2">
@@ -248,7 +248,7 @@ export default function Home() {
                       className={`flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-semibold transition-all ${
                         copied
                           ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-400"
-                          : "border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-400"
+                          : "border-white/8 bg-white/4 text-slate-300 hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-400"
                       }`}
                     >
                       {copied ? (
@@ -268,7 +268,7 @@ export default function Home() {
                       href={shortUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-11 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 text-sm font-semibold text-slate-300 transition-all hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-400"
+                      className="flex h-11 items-center gap-2 rounded-xl border border-white/8 bg-white/4 px-4 text-sm font-semibold text-slate-300 transition-all hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-400"
                     >
                       <ExternalLink className="h-4 w-4" />
                       Open
@@ -298,7 +298,7 @@ export default function Home() {
           </div>
 
           {/* Divider */}
-          <div className="mx-auto mt-24 h-px max-w-5xl bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+          <div className="mx-auto mt-24 h-px max-w-5xl bg-linear-to-r from-transparent via-white/8 to-transparent" />
 
           {/* Features */}
           <div className="mt-20">
@@ -336,7 +336,7 @@ export default function Home() {
           </div>
 
           {/* CTA */}
-          <div className="relative mt-24 overflow-hidden rounded-[30px] border border-emerald-400/10 bg-gradient-to-br from-emerald-500/[0.08] to-transparent p-8 text-center sm:p-14">
+          <div className="relative mt-24 overflow-hidden rounded-[30px] border border-emerald-400/10 bg-linear-to-br from-emerald-500/8 to-transparent p-8 text-center sm:p-14">
             <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-96 -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[100px]" />
 
             <div className="relative">
@@ -370,7 +370,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.06]">
+      <footer className="relative z-10 border-t border-white/6">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 text-xs text-slate-600 sm:flex-row sm:px-8">
           <p>
             © {new Date().getFullYear()} TinyURL. Built with Spring Boot
@@ -397,7 +397,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="group rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/20 hover:bg-emerald-400/[0.03]">
+    <div className="group rounded-2xl border border-white/[0.07] bg-white/2 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/20 hover:bg-emerald-400/3">
       <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-400/15 bg-emerald-400/[0.07] text-emerald-400 transition-all duration-300 group-hover:bg-emerald-400/10">
         {icon}
       </div>
