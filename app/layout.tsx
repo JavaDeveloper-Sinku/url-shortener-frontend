@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ShortenAI - Smart URL Shortener",
-  description:
-    "Shorten, track and optimize your links with AI-powered analytics.",
+  title: "TinyURL - Smart URL Shortener",
+  description: "Shorten, track and optimize your links.",
 };
 
 export default function RootLayout({
